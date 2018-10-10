@@ -1,18 +1,37 @@
 package edu.mcw.rgd;
 
 import edu.mcw.rgd.dao.impl.AliasDAO;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.core.io.FileSystemResource;
 
 import java.sql.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: BBakir
- * Date: Oct 22, 2008
- * Time: 1:36:39 PM
- * A program to replace "||" and "," separators into ; at ALIASES table for old_strain_symbol and old_strain_name
+ * @author BBakir
+ * @since Oct 22, 2008
+ * A program to replace "||" and "," separators into ; in ALIASES table for old_strain_symbol and old_strain_name
  */
 public class StrainSynonymFix {
+    private String version;
+
     public static void main(String[] args) throws Exception {
+
+        DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
+        new XmlBeanDefinitionReader(bf).loadBeanDefinitions(new FileSystemResource("properties/AppConfigure.xml"));
+        StrainSynonymFix manager = (StrainSynonymFix) (bf.getBean("manager"));
+
+        try {
+            manager.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void run() throws Exception {
+
+        System.out.println(getVersion());
 
         AliasDAO aliasDAO = new AliasDAO();
         Connection conn = aliasDAO.getDataSource().getConnection();
@@ -35,5 +54,13 @@ public class StrainSynonymFix {
         }
 
         System.out.println(count+" strain aliases have been fixed.");
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }

@@ -1,0 +1,2 @@
+2.0.0 - 2018-10-10
+  updated to use spring framework to load properties
