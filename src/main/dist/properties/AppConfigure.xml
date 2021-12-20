@@ -2,7 +2,7 @@
 
 <beans>
     <bean id="manager" class="edu.mcw.rgd.StrainSynonymFix">
-        <property name="version" value="Strain Synonym Fix pipeline  -- build May 10, 2020" />
+        <property name="version" value="Strain Synonym Fix pipeline  -- build Dec 20, 2021" />
     </bean>
 
 </beans>
