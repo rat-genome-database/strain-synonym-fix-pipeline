@@ -18,7 +18,7 @@ public class Dao {
         List<Alias> aliases = new ArrayList<>();
         String[] aliasTypes = new String[]{"old_strain_symbol","old_strain_name"};
         for( String aliasType: aliasTypes ) {
-            aliases.addAll(aliasDAO.getAliasesByType(aliasType);
+            aliases.addAll(aliasDAO.getAliasesByType(aliasType));
         }
         return aliases;
     }
