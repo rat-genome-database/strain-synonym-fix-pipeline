@@ -1,5 +1,6 @@
 Jan 16, 2023
   updated ojdbc dependency
+  improved logging
 
 Jan 10, 2023
   updated build.gradle to be gradle 6.x+ compatible

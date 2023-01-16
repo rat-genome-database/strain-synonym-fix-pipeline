@@ -1,11 +1,16 @@
 package edu.mcw.rgd;
 
-import edu.mcw.rgd.dao.impl.AliasDAO;
+import edu.mcw.rgd.datamodel.Alias;
+import edu.mcw.rgd.process.Utils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
-import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author BBakir
@@ -13,6 +18,9 @@ import java.sql.*;
  * A program to replace "||" and "," separators into ; in ALIASES table for old_strain_symbol and old_strain_name
  */
 public class StrainSynonymFix {
+
+    Logger log = LogManager.getLogger("status");
+
     private String version;
 
     public static void main(String[] args) throws Exception {
@@ -31,6 +39,39 @@ public class StrainSynonymFix {
 
     public void run() throws Exception {
 
+        long time0 = System.currentTimeMillis();
+
+        Dao dao = new Dao();
+
+        log.info(getVersion());
+        log.info("   "+dao.getConnectionInfo());
+        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        log.info("   started at "+sdt.format(new Date(time0)));
+
+        int updateCount = 0;
+
+        List<Alias> aliases = dao.getStrainAliases();
+        for( Alias a: aliases ) {
+            if( a.getValue().contains("||") ) {
+
+                String oldAlias = a.getValue();
+                String newAlias = oldAlias.replace("||", ";");
+                a.setValue(newAlias);
+
+                log.info("  ### ALIAS updated RGD:"+a.getRgdId()+" ["+a.getTypeName()+"] OLD_NAME=["+oldAlias+"] NEW_NAME=["+newAlias+"]");
+                updateCount++;
+            }
+        }
+
+        log.info(" strain aliases updated: "+updateCount);
+
+        log.info("=== OK === elapsed "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
+        log.info("");
+    }
+
+    /*
+    public void runOld() throws Exception {
+
         System.out.println(getVersion());
 
         AliasDAO aliasDAO = new AliasDAO();
@@ -48,13 +89,14 @@ public class StrainSynonymFix {
             String newAliasValue=aliasValue.replace("||",";");
             updateSynonym.setInt(3, aliasKey);
             updateSynonym.setString(1, newAliasValue);
-            updateSynonym.setString(2, newAliasValue.toLowerCase());           
+            updateSynonym.setString(2, newAliasValue.toLowerCase());
             updateSynonym.executeUpdate();
             count++;
         }
 
         System.out.println(count+" strain aliases have been fixed.");
     }
+    */
 
     public void setVersion(String version) {
         this.version = version;
