@@ -5,7 +5,10 @@
 #
 . /etc/profile
 APPNAME=StrainSynonymFix
-
 APPDIR=/home/rgddata/pipelines/$APPNAME
+SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
+
 cd $APPDIR
 ./_run.sh
+
+mailx -s "[$SERVER] Strain Synonym Fix pipeline OK" mtutaj@mcw.edu < $APPDIR/logs/summary.log
