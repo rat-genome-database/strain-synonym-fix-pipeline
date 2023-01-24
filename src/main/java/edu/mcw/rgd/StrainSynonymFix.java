@@ -69,35 +69,6 @@ public class StrainSynonymFix {
         log.info("");
     }
 
-    /*
-    public void runOld() throws Exception {
-
-        System.out.println(getVersion());
-
-        AliasDAO aliasDAO = new AliasDAO();
-        Connection conn = aliasDAO.getDataSource().getConnection();
-        String updateSynonymString = "UPDATE ALIASES SET ALIAS_VALUE = ?,ALIAS_VALUE_LC=? WHERE ALIAS_KEY = ?";
-        PreparedStatement updateSynonym = conn.prepareStatement(updateSynonymString);
-        Statement stmt = conn.createStatement(
-                ResultSet.TYPE_SCROLL_INSENSITIVE,
-                ResultSet.CONCUR_UPDATABLE);
-        ResultSet rs = stmt.executeQuery("select a.ALIAS_KEY,a.ALIAS_VALUE from aliases a where a.ALIAS_VALUE like '%||%' and a.ALIAS_TYPE_NAME_LC in('old_strain_symbol','old_strain_name')");
-        int count = 0;
-        while (rs.next()) {
-            int aliasKey = rs.getInt("ALIAS_KEY");
-            String aliasValue = rs.getString("ALIAS_VALUE");
-            String newAliasValue=aliasValue.replace("||",";");
-            updateSynonym.setInt(3, aliasKey);
-            updateSynonym.setString(1, newAliasValue);
-            updateSynonym.setString(2, newAliasValue.toLowerCase());
-            updateSynonym.executeUpdate();
-            count++;
-        }
-
-        System.out.println(count+" strain aliases have been fixed.");
-    }
-    */
-
     public void setVersion(String version) {
         this.version = version;
     }
