@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# run the StrainSynonymFix pipeline
 #
 . /etc/profile
-APPNAME=StrainSynonymFix
+APPNAME="strain-synonym-fix-pipeline"
 
 APPDIR=/home/rgddata/pipelines/$APPNAME
 cd $APPDIR

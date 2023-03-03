@@ -32,7 +32,7 @@ public class StrainSynonymFix {
         try {
             manager.run();
         } catch (Exception e) {
-            e.printStackTrace();
+            Utils.printStackTrace(e, manager.log);
             throw e;
         }
     }
@@ -57,6 +57,7 @@ public class StrainSynonymFix {
                 String oldAlias = a.getValue();
                 String newAlias = oldAlias.replace("||", ";");
                 a.setValue(newAlias);
+                dao.updateAlias(a);
 
                 log.info("  ### ALIAS updated RGD:"+a.getRgdId()+" ["+a.getTypeName()+"] OLD_NAME=["+oldAlias+"] NEW_NAME=["+newAlias+"]");
                 updateCount++;

@@ -4,11 +4,11 @@
 # Date: 04/27/2009
 #
 . /etc/profile
-APPNAME=StrainSynonymFix
+APPNAME="strain-synonym-fix-pipeline"
 APPDIR=/home/rgddata/pipelines/$APPNAME
 SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
 
 cd $APPDIR
-./_run.sh
+./_run.sh > ${APPDIR}/run.log
 
 mailx -s "[$SERVER] Strain Synonym Fix pipeline OK" mtutaj@mcw.edu < $APPDIR/logs/summary.log
