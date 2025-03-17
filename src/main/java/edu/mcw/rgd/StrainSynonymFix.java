@@ -15,13 +15,13 @@ import java.util.List;
 /**
  * @author BBakir
  * @since Oct 22, 2008
- * A program to replace "||" and "," separators into ; in ALIASES table for old_strain_symbol and old_strain_name
  */
 public class StrainSynonymFix {
 
-    Logger log = LogManager.getLogger("status");
+    static Logger log = LogManager.getLogger("status");
 
     private String version;
+    private Dao dao;
 
     public static void main(String[] args) throws Exception {
 
@@ -29,24 +29,48 @@ public class StrainSynonymFix {
         new XmlBeanDefinitionReader(bf).loadBeanDefinitions(new FileSystemResource("properties/AppConfigure.xml"));
         StrainSynonymFix manager = (StrainSynonymFix) (bf.getBean("manager"));
 
+        boolean fixStrainSynonyms = false;
+        boolean updateOntologyFromStrains = false;
+
+        for( String arg: args ) {
+
+            arg = arg.trim().toLowerCase();
+
+            switch( arg ) {
+                case "--fix_strain_synonyms":
+                    fixStrainSynonyms = true;
+                    break;
+                case "--update_ontology_from_strains":
+                    updateOntologyFromStrains = true;
+                    break;
+            }
+        }
+
+        long time0 = System.currentTimeMillis();
+
+        log.info(manager.getVersion());
+        log.info("   "+manager.getDao().getConnectionInfo());
+        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        log.info("   started at "+sdt.format(new Date(time0)));
+
         try {
-            manager.run();
+            if( fixStrainSynonyms ) {
+                manager.fixStrainSynonyms();
+            }
+            if( updateOntologyFromStrains ) {
+                manager.updateOntologyFromStrains();
+            }
         } catch (Exception e) {
             Utils.printStackTrace(e, manager.log);
             throw e;
         }
+
+        log.info("=== OK === elapsed "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
+        log.info("");
     }
 
-    public void run() throws Exception {
-
-        long time0 = System.currentTimeMillis();
-
-        Dao dao = new Dao();
-
-        log.info(getVersion());
-        log.info("   "+dao.getConnectionInfo());
-        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        log.info("   started at "+sdt.format(new Date(time0)));
+    /// A program to replace "||" and "," separators into ; in ALIASES table for old_strain_symbol and old_strain_name
+    void fixStrainSynonyms() throws Exception {
 
         int updateCount = 0;
 
@@ -65,9 +89,11 @@ public class StrainSynonymFix {
         }
 
         log.info(" strain aliases updated: "+updateCount);
+    }
 
-        log.info("=== OK === elapsed "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
-        log.info("");
+    void updateOntologyFromStrains() {
+
+
     }
 
     public void setVersion(String version) {
@@ -76,5 +102,13 @@ public class StrainSynonymFix {
 
     public String getVersion() {
         return version;
+    }
+
+    public Dao getDao() {
+        return dao;
+    }
+
+    public void setDao(Dao dao) {
+        this.dao = dao;
     }
 }

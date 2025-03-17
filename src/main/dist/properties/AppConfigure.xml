@@ -2,9 +2,11 @@
 
 <beans>
     <bean id="manager" class="edu.mcw.rgd.StrainSynonymFix">
-        <property name="version" value="Strain Synonym Fix pipeline  -- build Oct 09, 2023" />
+        <property name="version" value="Strain Synonym Fix pipeline  -- build Mar 17, 2025" />
+        <property name="dao" ref="dao" />
     </bean>
 
+    <bean id="dao" class="edu.mcw.rgd.Dao"></bean>
 </beans>
 
 

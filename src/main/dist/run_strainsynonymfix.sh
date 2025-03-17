@@ -9,6 +9,6 @@ APPDIR=/home/rgddata/pipelines/$APPNAME
 SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
 
 cd $APPDIR
-./_run.sh > ${APPDIR}/run.log
+./_run.sh --fix_strain_synonyms > ${APPDIR}/run.log
 
 mailx -s "[$SERVER] Strain Synonym Fix pipeline OK" mtutaj@mcw.edu < $APPDIR/logs/summary.log
