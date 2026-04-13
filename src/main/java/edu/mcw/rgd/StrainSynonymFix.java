@@ -1,6 +1,7 @@
 package edu.mcw.rgd;
 
 import edu.mcw.rgd.datamodel.Alias;
+import edu.mcw.rgd.process.MemoryMonitor;
 import edu.mcw.rgd.process.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,6 +54,8 @@ public class StrainSynonymFix {
         SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         log.info("   started at "+sdt.format(new Date(time0)));
 
+        MemoryMonitor memoryMonitor = new MemoryMonitor();
+        memoryMonitor.start();
         try {
             if( fixStrainSynonyms ) {
                 manager.fixStrainSynonyms();
@@ -63,6 +66,9 @@ public class StrainSynonymFix {
         } catch (Exception e) {
             Utils.printStackTrace(e, manager.log);
             throw e;
+        } finally {
+            memoryMonitor.stop();
+            log.info(memoryMonitor.getSummary());
         }
 
         log.info("=== OK === elapsed "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
