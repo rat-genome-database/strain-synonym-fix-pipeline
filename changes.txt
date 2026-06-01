@@ -1,3 +1,6 @@
+Jun 1, 2026
+  print usage when no action flag is supplied; updated dependencies
+
 Apr 21, 2026
   updated README.md; updated dependencies
 

@@ -47,6 +47,13 @@ public class StrainSynonymFix {
             }
         }
 
+        if( !fixStrainSynonyms && !updateOntologyFromStrains ) {
+            log.info("Usage: java -jar strain-synonym-fix-pipeline.jar <action> [<action> ...]");
+            log.info("  --fix_strain_synonyms            replace '||' separators with ';' in strain aliases");
+            log.info("  --update_ontology_from_strains   transfer strain descriptions, synonyms and xrefs to RS ontology");
+            System.exit(1);
+        }
+
         long time0 = System.currentTimeMillis();
 
         log.info(manager.getVersion());
