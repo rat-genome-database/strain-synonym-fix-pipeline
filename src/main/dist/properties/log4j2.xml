@@ -35,5 +35,9 @@
             <AppenderRef ref="detail"/>
             <AppenderRef ref="Console" level="info"/>
         </Logger>
+        <!-- per-change details (R1/R2/R3) only -->
+        <Logger name="detail" level="debug" additivity="false">
+            <AppenderRef ref="detail"/>
+        </Logger>
     </Loggers>
 </Configuration>

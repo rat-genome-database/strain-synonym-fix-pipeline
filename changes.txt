@@ -1,3 +1,6 @@
+Jun 22, 2026
+  implemented --update_ontology_from_strains: transfer strain description, aliases (as synonyms) and RRRC links (as xrefs) to the matching RS ontology terms; per-change detail log + summary counts; removed unused commons-net dependency
+
 Jun 1, 2026
   print usage when no action flag is supplied; updated dependencies
 
