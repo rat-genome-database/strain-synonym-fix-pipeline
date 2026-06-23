@@ -134,10 +134,11 @@ public class StrainSynonymFix {
 
             // R1: transfer the description from the strain when the term has none
             if( isBlank(term.getDefinition()) && !isBlank(s.getDescription()) ) {
-                term.setDefinition(s.getDescription());
+                String definition = sanitize(s.getDescription());
+                term.setDefinition(definition);
                 dao.updateTerm(term);
                 descriptions++;
-                logDetail.info("R1 DESCRIPTION  "+termAcc+" <= RGD:"+s.getRgdId()+" ["+s.getSymbol()+"]  "+s.getDescription());
+                logDetail.info("R1 DESCRIPTION  "+termAcc+" <= RGD:"+s.getRgdId()+" ["+s.getSymbol()+"]  "+definition);
             }
 
             // names already on the term, to avoid creating duplicates
@@ -198,6 +199,12 @@ public class StrainSynonymFix {
 
     private static boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
+    }
+
+    /** collapse tabs, line breaks and other whitespace runs into single spaces;
+     *  ONT_TERMS.CKC_ONT_TERMS_DEF_COMMENT forbids tab/CR/LF in the term definition. */
+    static String sanitize(String s) {
+        return s == null ? null : s.replaceAll("\\s+", " ").trim();
     }
 
     public void setVersion(String version) {
