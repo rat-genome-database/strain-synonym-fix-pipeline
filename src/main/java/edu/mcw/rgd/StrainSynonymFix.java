@@ -159,10 +159,11 @@ public class StrainSynonymFix {
                 logDetail.info("R2 SYNONYM      "+termAcc+" <= RGD:"+s.getRgdId()+"  ["+a.getTypeName()+"] "+name);
             }
 
-            // R3: create an RRRC xref when the strain links to the Rat Resource and Research Center
+            // R3: create an RRRC xref when the strain links to the Rat Resource and Research Center;
+            //     RRRC strain ids are zero-padded to 5 digits to match rrrc.us (e.g. 826 -> 00826)
             String rrrcId = extractRrrcId(s.getSource(), s.getOrigination());
             if( rrrcId != null ) {
-                String xref = "RRRC:"+rrrcId;
+                String xref = "RRRC:"+String.format("%05d", Integer.parseInt(rrrcId));
                 if( !existingNames.contains(xref) ) {
                     dao.insertTermSynonym(termAcc, xref, "xref", SYNONYM_SOURCE);
                     existingNames.add(xref);

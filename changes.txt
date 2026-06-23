@@ -1,5 +1,6 @@
 Jun 23, 2026
   --update_ontology_from_strains: strip tabs/line breaks from strain descriptions before storing as term definitions (ONT_TERMS check constraint)
+  --update_ontology_from_strains: zero-pad RRRC xref ids to 5 digits to match rrrc.us (e.g. RRRC:00826)
 
 Jun 22, 2026
   implemented --update_ontology_from_strains: transfer strain description, aliases (as synonyms) and RRRC links (as xrefs) to the matching RS ontology terms; per-change detail log + summary counts; removed unused commons-net dependency
