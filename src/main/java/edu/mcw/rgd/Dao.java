@@ -56,6 +56,16 @@ public class Dao {
         ontologyXDAO.updateTerm(term);
     }
 
+    /** update an existing term synonym (identified by its key), e.g. to change its type. */
+    public void updateTermSynonym(TermSynonym syn) throws Exception {
+        ontologyXDAO.updateTermSynonym(syn);
+    }
+
+    /** delete a term synonym (identified by its key). */
+    public void deleteTermSynonym(TermSynonym syn) throws Exception {
+        ontologyXDAO.deleteTermSynonyms(List.of(syn));
+    }
+
     /** all aliases for a strain rgd id. */
     public List<Alias> getAliases(int rgdId) throws Exception {
         return aliasDAO.getAliases(rgdId);
