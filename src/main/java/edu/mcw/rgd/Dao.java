@@ -3,8 +3,10 @@ package edu.mcw.rgd;
 import edu.mcw.rgd.dao.impl.AliasDAO;
 import edu.mcw.rgd.dao.impl.OntologyXDAO;
 import edu.mcw.rgd.dao.impl.StrainDAO;
+import edu.mcw.rgd.dao.impl.XdbIdDAO;
 import edu.mcw.rgd.datamodel.Alias;
 import edu.mcw.rgd.datamodel.Strain;
+import edu.mcw.rgd.datamodel.XdbId;
 import edu.mcw.rgd.datamodel.ontologyx.Term;
 import edu.mcw.rgd.datamodel.ontologyx.TermSynonym;
 
@@ -16,6 +18,13 @@ public class Dao {
     private final AliasDAO aliasDAO = new AliasDAO();
     private final StrainDAO strainDAO = new StrainDAO();
     private final OntologyXDAO ontologyXDAO = new OntologyXDAO();
+    private final XdbIdDAO xdbIdDAO = new XdbIdDAO();
+
+    /** the RRRC accession id (xdb key 141) for a strain rgd id, or null when the strain has no RRRC id. */
+    public String getRrrcAccId(int rgdId) throws Exception {
+        List<XdbId> xids = xdbIdDAO.getXdbIdsByRgdId(141, rgdId);
+        return xids.isEmpty() ? null : xids.get(0).getAccId();
+    }
 
     public String getConnectionInfo() {
         return aliasDAO.getConnectionInfo();

@@ -124,6 +124,7 @@ public class StrainSynonymFix {
 
         int withTerm = 0, descriptions = 0, synonyms = 0;
         int rrrcInserted = 0, rrrcConverted = 0, rrrcDeleted = 0;
+        int citationInserted = 0, citationUpdated = 0, citationDeleted = 0;
 
         for( Strain s: strains ) {
 
@@ -232,6 +233,36 @@ public class StrainSynonymFix {
                     }
                 }
             }
+
+            // R4: store the strain's Citation ID (RRID) on the term as a single citation_id synonym
+            String rrid = buildRrid(s);
+            List<TermSynonym> citationSyns = new ArrayList<>();
+            for( TermSynonym syn: termSynonyms ) {
+                if( CITATION_TYPE.equals(syn.getType()) ) {
+                    citationSyns.add(syn);
+                }
+            }
+            if( citationSyns.isEmpty() ) {
+                dao.insertTermSynonym(termAcc, rrid, CITATION_TYPE, SYNONYM_SOURCE);
+                citationInserted++;
+                logDetail.info("R4 CITATION insert "+termAcc+" <= RGD:"+s.getRgdId()+"  "+rrid);
+            } else {
+                TermSynonym keep = citationSyns.get(0);
+                if( !rrid.equals(keep.getName()) ) {
+                    String before = keep.getName();
+                    keep.setName(rrid);
+                    dao.updateTermSynonym(keep);
+                    citationUpdated++;
+                    logDetail.info("R4 CITATION update "+termAcc+"  ["+before+"] -> "+rrid);
+                }
+                for( TermSynonym syn: citationSyns ) {
+                    if( syn != keep ) {
+                        dao.deleteTermSynonym(syn);
+                        citationDeleted++;
+                        logDetail.info("R4 CITATION dedup  "+termAcc+"  removed ["+syn.getName()+"]");
+                    }
+                }
+            }
         }
 
         log.info("strains linked to an RS term:   " + Utils.formatThousands(withTerm));
@@ -240,9 +271,23 @@ public class StrainSynonymFix {
         log.info("R3 RRRC xrefs inserted:         " + Utils.formatThousands(rrrcInserted));
         log.info("R3 RRRC xrefs converted:        " + Utils.formatThousands(rrrcConverted));
         log.info("R3 RRRC duplicates removed:     " + Utils.formatThousands(rrrcDeleted));
+        log.info("R4 citation ids inserted:       " + Utils.formatThousands(citationInserted));
+        log.info("R4 citation ids updated:        " + Utils.formatThousands(citationUpdated));
+        log.info("R4 citation ids deduped:        " + Utils.formatThousands(citationDeleted));
     }
 
     private static final String SYNONYM_SOURCE = "RGD";
+    private static final String CITATION_TYPE = "citation_id";
+
+    /** the strain's Citation ID (RRID): RRRC-based when the strain has an RRRC accession (xdb 141), else RGD-based. */
+    private String buildRrid(Strain s) throws Exception {
+        String rrrcAccId = dao.getRrrcAccId(s.getRgdId());
+        if( rrrcAccId != null ) {
+            // mirror the strain report page: 4-digit ids get one leading zero, others used as-is
+            return "RRID:RRRC_" + (rrrcAccId.length()==4 ? "0"+rrrcAccId : rrrcAccId);
+        }
+        return "RRID:RGD_" + s.getRgdId();
+    }
 
     // an RRRC id appears as an rrrc.us strain link (in source/origination) or as an "RRRC:<id>" token (in aliases/synonyms)
     private static final Pattern RRRC_LINK_PATTERN = Pattern.compile("rrrc\\.us/Strain/\\?x=(\\d+)", Pattern.CASE_INSENSITIVE);
