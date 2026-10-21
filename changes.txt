@@ -1,3 +1,6 @@
+Oct 21, 2026
+  migrated to postgres; updated dependencies
+
 Jun 23, 2026
   --update_ontology_from_strains: strip tabs/line breaks from strain descriptions before storing as term definitions (ONT_TERMS check constraint)
   --update_ontology_from_strains: zero-pad RRRC xref ids to 5 digits to match rrrc.us (e.g. RRRC:00826)
